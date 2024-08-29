@@ -1,6 +1,7 @@
 package main
 
 import (
+	"catalog-product/apps"
 	"catalog-product/external/database"
 	"log"
 )
@@ -21,6 +22,10 @@ func main(){
 	if db != nil {
 		log.Println("connected db")
 	}
+
+	APP_PORT := ":9000"
+
+	apps.Run(APP_PORT, db)
 	
 
 }
