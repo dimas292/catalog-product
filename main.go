@@ -11,7 +11,7 @@ func main(){
 	dbPort := "5432"
 	dbUser := "postgres"
 	dbPass := "root"
-	dbName := "postgres"
+	dbName := "belajar_go"
 
 	db, err := database.ConnectPostgsres(dbHost, dbPort, dbUser, dbPass, dbName)
 	if err != nil {
