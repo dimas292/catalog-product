@@ -8,6 +8,8 @@ import (
 
 type repositoryContract interface{
 	findAllEmployees(ctx context.Context)(res []Employee, err error)
+
+	newEmployee(ctx context.Context, req Employee) (err error)
 }
 
 type service struct{
@@ -40,5 +42,23 @@ func(s service) listEmployee(ctx context.Context) (employees []listEmployeeRespo
 	}
 
 	return employees, nil
+}
+
+func (s service) createNewEmployee(ctx context.Context, req createNewEmpoyeesRequest) (err error){
+
+	var emp = Employee{
+		Name: req.Name,
+		NIP: req.NIP,
+		Address: req.Address,
+	}
+
+	err = s.repo.newEmployee(ctx, emp)
+	if err != nil {
+		log.Println("[createNewEmployee, newEmployee] error :", err)
+		return err
+	}
+
+	return nil
+
 }
 

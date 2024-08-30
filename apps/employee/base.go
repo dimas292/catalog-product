@@ -34,6 +34,8 @@ func Run(router chi.Router, db *sql.DB) {
 	router.Route("/employees", func(r chi.Router) {
         // endpoint : GET /employees
 		r.Get("/", handler.index)
+		r.Post("/process/add", handler.createEmployee)
+		r.Get("/add", handler.formCreateEmployee)
 
 	})
 }

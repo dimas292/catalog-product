@@ -9,6 +9,9 @@ type repository struct {
 	db *sql.DB
 }
 
+// newEmpolyee implements repositoryContract.
+
+
 func newRepository(db *sql.DB) repository {
 	return repository{db: db}
 }
@@ -39,4 +42,23 @@ func (r repository) findAllEmployees(ctx context.Context) (res []Employee, err e
 	}
 
 	return res, nil
+}
+
+
+func (r repository) newEmployee(ctx context.Context, req Employee) (err error) {
+	 query := `
+	 INSERT INTO employees (name, address, nip, created_at, updated_at)
+		VALUES (
+			$1, $2, $3, now(), now()
+		)`
+
+	stmt, err := r.db.PrepareContext(ctx, query)
+	if err != nil {
+		return
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, req.Name, req.Address, req.NIP)
+	return
 }

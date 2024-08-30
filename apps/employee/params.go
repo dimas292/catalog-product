@@ -13,3 +13,10 @@ type listEmployeeResponse struct {
 	CreatedAt string
 
 }
+
+type createNewEmpoyeesRequest struct{
+	Name string
+	NIP string
+	Address string
+
+}
