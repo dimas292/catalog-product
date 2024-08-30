@@ -26,6 +26,7 @@ func registerRouting(router chi.Router, db *sql.DB){
 	router.Get("/", getIndex)
 
 	employee.Run(router, db)
+
 }
 
 func getIndex(rw http.ResponseWriter, r *http.Request){

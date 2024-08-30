@@ -36,6 +36,6 @@ func Run(router chi.Router, db *sql.DB) {
 		r.Get("/", handler.index)
 		r.Post("/process/add", handler.createEmployee)
 		r.Get("/add", handler.formCreateEmployee)
-
+		r.Get("/delete", handler.deleteEmployee)
 	})
 }

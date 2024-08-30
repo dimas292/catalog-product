@@ -1,8 +1,8 @@
 package employee
 
-type renderWeb struct{
+type renderWeb struct {
 	Title string
-	Data interface{}
+	Data  interface{}
 }
 
 type listEmployeeResponse struct {
@@ -11,12 +11,11 @@ type listEmployeeResponse struct {
 	Address   string
 	NIP       string
 	CreatedAt string
-
 }
 
-type createNewEmpoyeesRequest struct{
-	Name string
-	NIP string
+type createNewEmpoyeesRequest struct {
+	Name    string
+	NIP     string
 	Address string
-
 }
+

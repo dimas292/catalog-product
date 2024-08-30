@@ -1,29 +1,29 @@
 package employee
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"path"
-	"fmt"
 )
 
 type handler struct {
 	svc service
 }
 
-func newHandler(svc service) handler{
+func newHandler(svc service) handler {
 	return handler{svc: svc}
 }
 
-func (h handler) index(rw http.ResponseWriter, r *http.Request){
+func (h handler) index(rw http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles(path.Join("external/public", "pages/employee/index.html"), path.Join("external/public", "layout/layout.html"))
 
 	if err != nil {
 		log.Println(err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
-		return 
+		return
 	}
 
 	emp, err := h.svc.listEmployee(r.Context())
@@ -33,7 +33,7 @@ func (h handler) index(rw http.ResponseWriter, r *http.Request){
 
 	resp := renderWeb{
 		Title: "halaman web",
-		Data: emp,
+		Data:  emp,
 	}
 
 	err = tmpl.Execute(rw, resp)
@@ -44,12 +44,6 @@ func (h handler) index(rw http.ResponseWriter, r *http.Request){
 	}
 }
 
-// file : /apps/employee/controller-web.go
-
-
-// ... kode sebelumnya
-
-// tambahkan method untuk menampilkan form
 func (h handler) formCreateEmployee(rw http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles(path.Join("external/public", "pages/employee/add.html"), path.Join("external/public", "layout/layout.html"))
 	if err != nil {
@@ -62,9 +56,6 @@ func (h handler) formCreateEmployee(rw http.ResponseWriter, r *http.Request) {
 		Title: "Halaman Employee",
 	}
 
-	// proses render file yang telah kita panggil diatas.
-	// method Execute membutuhkan 2 parameter, yaitu sebuah ResponseWriter dan sebuah data.
-	// karnea pada method Index ini kita tidak membutuhkan data, maka cukup ditulis dengan nil
 	err = tmpl.Execute(rw, resp)
 	if err != nil {
 		log.Println(err)
@@ -77,10 +68,6 @@ func (h handler) formCreateEmployee(rw http.ResponseWriter, r *http.Request) {
 func (h handler) createEmployee(rw http.ResponseWriter, r *http.Request) {
 	var req = createNewEmpoyeesRequest{}
 
-	// proses pengambilan nilai input dari html.
-	// nip, address, dan name itu akan didapat dari tag input di properti `name` pada html
-	// contohnya : <input name="nip" />
-	// atau <input name="address" />
 	req = createNewEmpoyeesRequest{
 		NIP:     r.FormValue("nip"),
 		Address: r.FormValue("address"),
@@ -110,3 +97,28 @@ func (h handler) createEmployee(rw http.ResponseWriter, r *http.Request) {
 	rw.Write([]byte(msg))
 }
 
+func (h handler) deleteEmployee(rw http.ResponseWriter, r *http.Request) {
+
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		http.Error(rw, "Missing ID", http.StatusBadRequest)
+		return
+	}
+	msg := ""
+	if err := h.svc.deleteEmployeeByID(r.Context(), id); err != nil {
+		log.Println("Gagal menghapus karyawan:", err)
+		msg = fmt.Sprintf(msg, err.Error())
+		return
+	} else {
+		msg = `
+	<script>
+		alert("hapus data berhasil !")
+		window.location.href="/employees"
+	</script>
+	`
+	}
+
+	rw.Write([]byte(msg))
+
+	http.Redirect(rw, r, "/employees", http.StatusSeeOther)
+}

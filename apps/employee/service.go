@@ -10,6 +10,7 @@ type repositoryContract interface{
 	findAllEmployees(ctx context.Context)(res []Employee, err error)
 
 	newEmployee(ctx context.Context, req Employee) (err error)
+	deleteEmployee(ctx context.Context, id string) (err error)
 }
 
 type service struct{
@@ -61,4 +62,16 @@ func (s service) createNewEmployee(ctx context.Context, req createNewEmpoyeesReq
 	return nil
 
 }
+
+func(s service) deleteEmployeeByID(ctx context.Context, id string)(err error){
+
+	err = s.repo.deleteEmployee(ctx, id)
+	if err != nil {
+		log.Println("[deleted, delete by id] error", err)
+		return err
+	}
+
+	return nil
+}
+
 
