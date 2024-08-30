@@ -1,13 +1,14 @@
 package apps
 
 import (
+	"catalog-product/apps/employee"
 	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
 	"path"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 )
 
 
@@ -15,14 +16,16 @@ func Run(appPort string, db *sql.DB){
 
 	router := chi.NewRouter()
 
-	registerRouting(router)
+	registerRouting(router, db)
 
 	log.Printf("server running at port %v\n", appPort)
 	http.ListenAndServe(appPort, router)
 }
 
-func registerRouting(router chi.Router){
+func registerRouting(router chi.Router, db *sql.DB){
 	router.Get("/", getIndex)
+
+	employee.Run(router, db)
 }
 
 func getIndex(rw http.ResponseWriter, r *http.Request){
